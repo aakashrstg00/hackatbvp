@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Index - let the name be x</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        window.addEventListener("load", greenToRed);
+        var esConnection = null;
+
+        function onBtnConnectClick() {
+            esConnection = new EventSource('./stream');
+            console.log("Connection is ", esConnection);
+            esConnection.addEventListener('timeChange', onTimeChangeFromServer);
+        }
+
+        function onTimeChangeFromServer(eventArg) {
+            var time = eventArg;
+            var t2 = time;
+            var elem = document.getElementById("time").innerHTML;
+            for (let i = 0; i < time; i++) {
+                setTimeout(function() {
+                    elem = time;
+                    time = parseInt(time);
+                    time--;
+                }, time * 1000);
+            }
+        }
+
+        function greenToRed() {
+            setD("green");
+            setTimeout(function() {
+                resetD("green");
+                setD("yellow");
+                setTimeout(function() {
+                    resetD("yellow");
+                    $.get('/naam').done(function(data) {
+                        setD("red");
+                    });
+                }, 900);
+            }, 900);
+            onTimeChangeFromServer(5);
+        }
+
+        function redToGreen() {
+            setD("red");
+            setTimeout(function() {
+                resetD("red");
+                $.get('/naam').done(function(data) {
+                    setD("green");
+                });
+            }, 1000);
+        }
+
+        function setD(id) {
+            var element = document.getElementById(id);
+            element.style.border = '3px solid black';
+            element.style.opacity = '1';
+        }
+
+        function resetD(id) {
+            var element = document.getElementById(id);
+            element.style.border = 'none';
+            element.style.opacity = '0.4';
+        }
+        /*$("load", function() {
+            $(".light").animate({
+                translateX: '100px'
+            }, 20000);
+        });*/
+        function byDefault() {
+            greenToRed();
+        }
+
+    </script>
+    <style>
+        * {
+            animation: 0.5s!important;
+        }
+
+        .box {
+            width: 80%;
+            border: 1px solid black;
+            border-radius: 8rem 8rem 3em 3em;
+            padding: 2rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+
+        .row {
+            margin-left: auto!important;
+            margin-right: auto!important;
+        }
+
+        .container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .circle {
+            border: 1px solid;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            margin-top: 1rem;
+            opacity: 0.4;
+        }
+
+        #red {
+            border-color: red;
+            background-color: #f49401;
+        }
+
+        #yellow {
+            border-color: yellow;
+            background-color: yellow;
+        }
+
+        #green {
+            border-color: lawngreen;
+            background-color: lawngreen;
+        }
+
+        .bmx {
+            opacity: 1!important;
+            border: 3px solid black;
+        }
+
+        #light {
+            position: fixed;
+            left: 40%;
+            right: 40%;
+        }
+
+    </style>
+    <script>
+        $("#clickit").onclick(function() {
+
+        })
+
+    </script>
+</head>
+
+<body style="background-color:#263a3b">
+    <div id="light" class="row mt-5">
+        <div class="box" style="background-color:#efbc23">
+            <div class="box" id="time"></div>
+            <div class="circle" id="red"></div>
+            <div class="circle" id="yellow"></div>
+            <div class="circle" id="green"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="divMessages"></div>
+    </div>
+</body>
+
+</html>
