@@ -10,7 +10,7 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
-        window.addEventListener("load", greenToRed);
+        window.addEventListener("load", byDefault);
         var esConnection = null;
 
         function onBtnConnectClick() {
@@ -18,7 +18,7 @@
             console.log("Connection is ", esConnection);
             esConnection.addEventListener('timeChange', onTimeChangeFromServer);
         }
-
+/*
         function onTimeChangeFromServer(eventArg) {
             var time = eventArg;
             var t2 = time;
@@ -30,7 +30,7 @@
                     time--;
                 }, time * 1000);
             }
-        }
+        }*/
 
         function greenToRed() {
             setD("green");
@@ -41,18 +41,20 @@
                     resetD("yellow");
                     $.get('/naam').done(function(data) {
                         setD("red");
+                        alert(data.y);
                     });
                 }, 900);
             }, 900);
-            onTimeChangeFromServer(5);
         }
-
+        var t;
         function redToGreen() {
             setD("red");
             setTimeout(function() {
                 resetD("red");
                 $.get('/naam').done(function(data) {
                     setD("green");
+                    alert(data.y);
+                    t=data.y;
                 });
             }, 1000);
         }
@@ -74,7 +76,11 @@
             }, 20000);
         });*/
         function byDefault() {
-            greenToRed();
+            redToGreen();
+            setTimeout(function(){
+                console.log("waiting................");
+            },4);
+          
         }
 
     </script>
@@ -141,12 +147,6 @@
         }
 
     </style>
-    <script>
-        $("#clickit").onclick(function() {
-
-        })
-
-    </script>
 </head>
 
 <body style="background-color:#263a3b">
